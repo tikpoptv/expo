@@ -6,7 +6,8 @@
         "radio": "*",
         "microphone": "*",
         "iBIT": "github:emwta/pxt-ibit#v4.0.10",
-        "Huskylens": "github:dfrobot/pxt-dfrobot_huskylens#v2.0.5"
+        "Huskylens": "github:dfrobot/pxt-dfrobot_huskylens#v2.0.5",
+        "radio-broadcast": "*"
     },
     "files": [
         "main.blocks",

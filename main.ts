@@ -5,16 +5,17 @@ function resetServo () {
     basic.showIcon(IconNames.Yes)
 }
 function objectfollowing () {
-    if (x >= 120 && x <= 200 && (h >= 60 && h <= 100)) {
+    if (h >= 230) {
         iBIT.MotorStop()
-    } else if (h < 60) {
+    } else if (h < 230 && (x >= 120 && x <= 200)) {
         iBIT.Motor(ibitMotor.Forward, 50)
-    } else if (h > 100) {
+        basic.pause(500)
+    } else if (h > 230) {
         iBIT.Motor(ibitMotor.Backward, 50)
     } else if (x < 120) {
-        iBIT.Turn(ibitTurn.Right, 50)
+        iBIT.Turn(ibitTurn.Left, 20)
     } else if (x > 200) {
-        iBIT.Turn(ibitTurn.Left, 50)
+        iBIT.Turn(ibitTurn.Right, 20)
     }
 }
 function Movement_test () {
@@ -35,12 +36,12 @@ function nameset () {
     huskylens.clearOSD()
     huskylens.initI2c()
     huskylens.initMode(protocolAlgorithm.ALGORITHM_COLOR_RECOGNITION)
-    huskylens.writeName(1, "tik")
-    huskylens.writeOSD("TIK", 280, 30)
+    huskylens.writeName(1, "test")
+    huskylens.writeOSD("tikxd", 160, 190)
     basic.showIcon(IconNames.Yes)
 }
-let h = 0
 let x = 0
+let h = 0
 nameset()
 basic.forever(function () {
     huskylens.request()

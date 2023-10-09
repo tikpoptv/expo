@@ -69,6 +69,14 @@ function nameset () {
     huskylens.writeOSD("tikxd", 160, 190)
     basic.showIcon(IconNames.Yes)
 }
+function nothing () {
+    iBIT.Turn(ibitTurn.Right, 20)
+    basic.pause(500)
+    iBIT.Turn(ibitTurn.Left, 20)
+    basic.pause(500)
+    iBIT.Motor(ibitMotor.Forward, 20)
+    basic.pause(500)
+}
 function crashOBJ () {
     iBIT.Servo(ibitServo.SV1, 90)
     iBIT.Motor(ibitMotor.Forward, 30)
@@ -93,7 +101,7 @@ function Huskylens () {
         }
     } else {
         basic.showIcon(IconNames.No)
-        iBIT.MotorStop()
+        nothing()
     }
 }
 let x = 0

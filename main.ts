@@ -1,21 +1,50 @@
 function resetServo () {
-    basic.showString("SR.")
+    basic.showString("S")
+    iBIT.Servo(ibitServo.SV1, 90)
+    iBIT.Servo(ibitServo.SV2, 90)
     iBIT.Servo(ibitServo.SV1, 0)
     iBIT.Servo(ibitServo.SV2, 0)
     basic.showIcon(IconNames.Yes)
 }
 function objectfollowing () {
-    if (h >= 230) {
+    if (h >= 170) {
         iBIT.MotorStop()
-    } else if (h < 230 && (x >= 120 && x <= 200)) {
+        basic.showLeds(`
+            # # # # #
+            # . . . #
+            # . . . #
+            # . . . #
+            # # # # #
+            `)
+        crashOBJ()
+    } else if (h < 170 && (x >= 120 && x <= 200)) {
+        basic.showLeds(`
+            . . # . .
+            . # . # .
+            # # # # #
+            . . # . .
+            . . # . .
+            `)
         iBIT.Motor(ibitMotor.Forward, 50)
         basic.pause(500)
-    } else if (h > 230) {
-        iBIT.Motor(ibitMotor.Backward, 50)
     } else if (x < 120) {
-        iBIT.Turn(ibitTurn.Left, 20)
-    } else if (x > 200) {
+        basic.showLeds(`
+            . . # . .
+            . # # . .
+            # . # # #
+            . # # . .
+            . . # . .
+            `)
         iBIT.Turn(ibitTurn.Right, 20)
+    } else if (x > 200) {
+        basic.showLeds(`
+            . . # . .
+            . . # # .
+            # # # . #
+            . . # # .
+            . . # . .
+            `)
+        iBIT.Turn(ibitTurn.Left, 20)
     }
 }
 function Movement_test () {
@@ -39,6 +68,14 @@ function nameset () {
     huskylens.writeName(1, "test")
     huskylens.writeOSD("tikxd", 160, 190)
     basic.showIcon(IconNames.Yes)
+}
+function crashOBJ () {
+    iBIT.Servo(ibitServo.SV1, 90)
+    iBIT.Motor(ibitMotor.Forward, 50)
+    basic.pause(500)
+    iBIT.Motor(ibitMotor.Backward, 100)
+    basic.pause(750)
+    iBIT.MotorStop()
 }
 function Huskylens () {
     huskylens.request()

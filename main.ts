@@ -96,7 +96,7 @@ function Huskylens () {
             h = huskylens.readeBox(1, Content1.yCenter)
             objectfollowing()
         } else {
-            iBIT.MotorStop()
+            nothing()
             basic.showIcon(IconNames.House)
         }
     } else {

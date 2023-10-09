@@ -71,9 +71,12 @@ function nameset () {
 }
 function crashOBJ () {
     iBIT.Servo(ibitServo.SV1, 90)
-    iBIT.Motor(ibitMotor.Forward, 50)
+    iBIT.Motor(ibitMotor.Forward, 30)
     basic.pause(500)
-    iBIT.Motor(ibitMotor.Backward, 100)
+    iBIT.Servo(ibitServo.SV1, 0)
+    iBIT.Motor(ibitMotor.Backward, 50)
+    basic.pause(500)
+    iBIT.Motor(ibitMotor.Forward, 100)
     basic.pause(750)
     iBIT.MotorStop()
 }

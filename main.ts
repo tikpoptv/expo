@@ -9,16 +9,20 @@ function resetServo () {
     basic.showIcon(IconNames.Yes)
 }
 function check_shoot () {
-    iBIT.MotorStop()
-    huskylens.initMode(protocolAlgorithm.ALGORITHM_TAG_RECOGNITION)
-    huskylens.writeName(1, "red")
-    huskylens.writeName(2, "bule")
+    if (tag_one == 1) {
+        huskylens.initMode(protocolAlgorithm.ALGORITHM_TAG_RECOGNITION)
+        huskylens.writeName(1, "red")
+        huskylens.writeName(2, "bule")
+        tag_one = 0
+    }
     if (color == 1) {
         if (huskylens.isAppear(1, HUSKYLENSResultType_t.HUSKYLENSResultBlock)) {
+            basic.showString("1")
             BL_RedayShoot()
         }
     } else if (color == 2) {
         if (huskylens.isAppear(2, HUSKYLENSResultType_t.HUSKYLENSResultBlock)) {
+            basic.showString("2")
             BL_RedayShoot()
         }
     } else {
@@ -26,11 +30,14 @@ function check_shoot () {
     }
 }
 function BL_RedayShoot () {
-    if (x >= 120 && x <= 200) {
+    basic.showIcon(IconNames.Meh)
+    S_x = huskylens.readeBox(1, Content1.xCenter)
+    S_y = huskylens.readeBox(1, Content1.yCenter)
+    if (S_x >= 120 && S_y <= 200) {
         crashOBJ()
-    } else if (x > 120) {
+    } else if (S_x > 120) {
         iBIT.Turn(ibitTurn.Right, 50)
-    } else if (x < 200) {
+    } else if (S_y < 200) {
         iBIT.Turn(ibitTurn.Left, 50)
     }
 }
@@ -71,7 +78,7 @@ function ready_crashOBJ () {
     iBIT.Servo(ibitServo.SV1, 0)
     basic.pause(500)
     iBIT.MotorStop()
-    check_shoot()
+    crashOBJ()
 }
 function Movement_test () {
     basic.showString("M")
@@ -93,7 +100,6 @@ function nameset () {
     huskylens.initMode(protocolAlgorithm.ALGORITHM_COLOR_RECOGNITION)
     huskylens.writeName(1, "test")
     huskylens.writeOSD("tikxd", 160, 190)
-    basic.showIcon(IconNames.Yes)
 }
 function nothing () {
     iBIT.Turn(ibitTurn.Right, 30)
@@ -121,39 +127,35 @@ function crashOBJ () {
     iBIT.MotorStop()
     iBIT.Servo(ibitServo.SV1, 0)
     basic.pause(500)
+    ball = 1
 }
 function Huskylens () {
     huskylens.request()
-    if (huskylens.isLearned(1)) {
-        if (huskylens.isAppear(1, HUSKYLENSResultType_t.HUSKYLENSResultBlock)) {
-            color = 1
-            x = huskylens.readeBox(1, Content1.xCenter)
-            y = huskylens.readeBox(1, Content1.yCenter)
-            objectfollowing()
-        } else {
-            iBIT.MotorStop()
-            basic.showIcon(IconNames.Sad)
-        }
-    } else if (huskylens.isLearned(2)) {
-        if (huskylens.isAppear(2, HUSKYLENSResultType_t.HUSKYLENSResultBlock)) {
-            color = 2
-            x = huskylens.readeBox(2, Content1.xCenter)
-            y = huskylens.readeBox(2, Content1.yCenter)
-            objectfollowing()
-        } else {
-            iBIT.MotorStop()
-            basic.showIcon(IconNames.Sad)
-        }
+    if (huskylens.isAppear(1, HUSKYLENSResultType_t.HUSKYLENSResultBlock)) {
+        color = 1
+        x = huskylens.readeBox(1, Content1.xCenter)
+        y = huskylens.readeBox(1, Content1.yCenter)
+        objectfollowing()
+    } else if (huskylens.isAppear(2, HUSKYLENSResultType_t.HUSKYLENSResultBlock)) {
+        color = 2
+        x = huskylens.readeBox(2, Content1.xCenter)
+        y = huskylens.readeBox(2, Content1.yCenter)
+        objectfollowing()
     } else {
         basic.showIcon(IconNames.No)
         iBIT.MotorStop()
     }
 }
-let y = 0
 let x = 0
+let y = 0
+let S_y = 0
+let S_x = 0
 let color = 0
+let tag_one = 0
+let ball = 0
 resetServo()
 nameset()
+ball = 0
 basic.forever(function () {
     Huskylens()
 })

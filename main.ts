@@ -1,13 +1,3 @@
-let tag_one = 0
-let color = 0
-let S_x = 0
-let S_y = 0
-let y = 0
-let x = 0
-let ball = 0
-let maintenance = 0
-let testservo = 0
-let testcam = 0
 function resetServo () {
     basic.showString("S")
     iBIT.Servo(ibitServo.SV1, 90)
@@ -42,6 +32,11 @@ function check_shoot () {
     } else {
         iBIT.Spin(ibitSpin.Left, 20)
     }
+}
+function maintenance_reset () {
+    maintenance = 0
+    testservo = 0
+    testcam = 0
 }
 function BL_RedayShoot () {
     basic.showIcon(IconNames.Meh)
@@ -81,85 +76,7 @@ function objectfollowing () {
         iBIT.Turn(ibitTurn.Left, 30)
     }
 }
-function ready_crashOBJ () {
-    iBIT.Servo(ibitServo.SV1, 90)
-    basic.pause(500)
-    iBIT.Motor(ibitMotor.Forward, 30)
-    basic.pause(1000)
-    iBIT.Servo(ibitServo.SV1, 0)
-    basic.pause(500)
-    iBIT.MotorStop()
-    ball = 1
-}
-function Movement_test () {
-    basic.showString("M")
-    iBIT.Motor(ibitMotor.Forward, 15)
-    basic.pause(1000)
-    iBIT.Turn(ibitTurn.Left, 50)
-    basic.pause(1000)
-    iBIT.Turn(ibitTurn.Right, 50)
-    basic.pause(2000)
-    iBIT.Turn(ibitTurn.Left, 50)
-    basic.pause(1000)
-    iBIT.MotorStop()
-    basic.showIcon(IconNames.Happy)
-}
-function maintenance_test () {
-    maintenance = 0
-    testservo = 0
-    testcam = 0
-}
-function nameset () {
-    basic.showIcon(IconNames.SmallHeart)
-    huskylens.clearOSD()
-    huskylens.initI2c()
-    huskylens.initMode(protocolAlgorithm.ALGORITHM_COLOR_RECOGNITION)
-    huskylens.writeName(1, "test")
-    huskylens.writeOSD("tikxd", 160, 190)
-}
-function nothing () {
-    iBIT.Turn(ibitTurn.Right, 30)
-    basic.pause(1000)
-    iBIT.Turn(ibitTurn.Left, 30)
-    basic.pause(1000)
-    iBIT.Turn(ibitTurn.Left, 30)
-    basic.pause(1000)
-    iBIT.Turn(ibitTurn.Right, 30)
-    basic.pause(1000)
-    iBIT.Motor(ibitMotor.Forward, 30)
-    basic.pause(1000)
-}
-function crashOBJ () {
-    basic.showIcon(IconNames.Skull)
-    iBIT.Motor(ibitMotor.Backward, 50)
-    basic.pause(500)
-    iBIT.Servo(ibitServo.SV1, 90)
-    basic.pause(500)
-    iBIT.Motor(ibitMotor.Forward, 100)
-    basic.pause(500)
-    iBIT.MotorStop()
-    iBIT.Servo(ibitServo.SV1, 0)
-    basic.pause(500)
-    ball = 1
-}
-function Huskylens () {
-    huskylens.request()
-    if (huskylens.isAppear(1, HUSKYLENSResultType_t.HUSKYLENSResultBlock)) {
-        color = 1
-        x = huskylens.readeBox(1, Content1.xCenter)
-        y = huskylens.readeBox(1, Content1.yCenter)
-        objectfollowing()
-    } else if (huskylens.isAppear(2, HUSKYLENSResultType_t.HUSKYLENSResultBlock)) {
-        color = 2
-        x = huskylens.readeBox(2, Content1.xCenter)
-        y = huskylens.readeBox(2, Content1.yCenter)
-        objectfollowing()
-    } else {
-        basic.showIcon(IconNames.No)
-        iBIT.MotorStop()
-    }
-}
-basic.forever(function () {
+function fc_maintenance () {
     if (input.buttonIsPressed(Button.A)) {
         maintenance = maintenance + 1
         if (maintenance == 1) {
@@ -197,5 +114,115 @@ basic.forever(function () {
                 testservo = 0
             }
         }
+    }
+}
+function runtest () {
+    if (input.buttonIsPressed(Button.B)) {
+        iBIT.Servo(ibitServo.SV1, 0)
+        iBIT.Servo(ibitServo.SV1, 70)
+        basic.pause(300)
+        iBIT.Motor(ibitMotor.Backward, 90)
+        basic.pause(400)
+        iBIT.MotorStop()
+        basic.pause(200)
+        iBIT.Motor(ibitMotor.Forward, 100)
+        basic.pause(500)
+        iBIT.MotorStop()
+        basic.pause(300)
+        iBIT.Servo(ibitServo.SV1, 0)
+    } else if (input.buttonIsPressed(Button.A)) {
+        iBIT.Servo(ibitServo.SV1, 0)
+        iBIT.Motor(ibitMotor.Backward, 90)
+        basic.pause(400)
+        iBIT.MotorStop()
+        iBIT.Servo(ibitServo.SV1, 40)
+        basic.pause(200)
+        iBIT.Motor(ibitMotor.Forward, 100)
+        basic.pause(500)
+        iBIT.MotorStop()
+        basic.pause(300)
+        iBIT.Servo(ibitServo.SV1, 0)
+    }
+}
+function ready_crashOBJ () {
+    iBIT.Servo(ibitServo.SV1, 90)
+    basic.pause(500)
+    iBIT.Motor(ibitMotor.Forward, 30)
+    basic.pause(1000)
+    iBIT.Servo(ibitServo.SV1, 0)
+    basic.pause(500)
+    iBIT.MotorStop()
+    ball = 1
+}
+function Movement_test () {
+    basic.showString("M")
+    iBIT.Motor(ibitMotor.Forward, 15)
+    basic.pause(1000)
+    iBIT.Turn(ibitTurn.Left, 50)
+    basic.pause(1000)
+    iBIT.Turn(ibitTurn.Right, 50)
+    basic.pause(2000)
+    iBIT.Turn(ibitTurn.Left, 50)
+    basic.pause(1000)
+    iBIT.MotorStop()
+    basic.showIcon(IconNames.Happy)
+}
+function nameset () {
+    basic.showIcon(IconNames.SmallHeart)
+    huskylens.clearOSD()
+    huskylens.initI2c()
+    huskylens.initMode(protocolAlgorithm.ALGORITHM_COLOR_RECOGNITION)
+    huskylens.writeName(1, "test")
+    huskylens.writeOSD("tikxd", 160, 190)
+}
+function crashOBJ () {
+    basic.showIcon(IconNames.Skull)
+    iBIT.Motor(ibitMotor.Backward, 50)
+    basic.pause(500)
+    iBIT.Servo(ibitServo.SV1, 90)
+    basic.pause(500)
+    iBIT.Motor(ibitMotor.Forward, 100)
+    basic.pause(500)
+    iBIT.MotorStop()
+    iBIT.Servo(ibitServo.SV1, 0)
+    basic.pause(500)
+    ball = 1
+}
+function Huskylens () {
+    huskylens.request()
+    if (huskylens.isAppear(1, HUSKYLENSResultType_t.HUSKYLENSResultBlock)) {
+        color = 1
+        x = huskylens.readeBox(1, Content1.xCenter)
+        y = huskylens.readeBox(1, Content1.yCenter)
+        objectfollowing()
+    } else if (huskylens.isAppear(2, HUSKYLENSResultType_t.HUSKYLENSResultBlock)) {
+        color = 2
+        x = huskylens.readeBox(2, Content1.xCenter)
+        y = huskylens.readeBox(2, Content1.yCenter)
+        objectfollowing()
+    } else {
+        basic.showIcon(IconNames.No)
+        iBIT.MotorStop()
+    }
+}
+let x = 0
+let y = 0
+let S_y = 0
+let S_x = 0
+let testcam = 0
+let testservo = 0
+let maintenance = 0
+let color = 0
+let tag_one = 0
+let ball = 0
+resetServo()
+nameset()
+ball = 0
+basic.forever(function () {
+    if (ball == 0) {
+        Huskylens()
+        tag_one = 1
+    } else if (ball == 1) {
+        check_shoot()
     }
 })

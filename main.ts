@@ -1,11 +1,25 @@
+let tag_one = 0
+let color = 0
+let S_x = 0
+let S_y = 0
+let y = 0
+let x = 0
+let ball = 0
+let maintenance = 0
+let testservo = 0
+let testcam = 0
 function resetServo () {
     basic.showString("S")
     iBIT.Servo(ibitServo.SV1, 90)
     basic.pause(500)
-    iBIT.Servo(ibitServo.SV2, 90)
+    iBIT.Servo(ibitServo.SV2, 5)
+    basic.pause(500)
+    iBIT.Servo(ibitServo.SV2, 35)
+    basic.pause(500)
+    iBIT.Servo(ibitServo.SV2, 60)
     basic.pause(500)
     iBIT.Servo(ibitServo.SV1, 0)
-    iBIT.Servo(ibitServo.SV2, 0)
+    basic.pause(500)
     basic.showIcon(IconNames.Yes)
 }
 function check_shoot () {
@@ -67,9 +81,6 @@ function objectfollowing () {
         iBIT.Turn(ibitTurn.Left, 30)
     }
 }
-function checkhy () {
-	
-}
 function ready_crashOBJ () {
     iBIT.Servo(ibitServo.SV1, 90)
     basic.pause(500)
@@ -78,7 +89,7 @@ function ready_crashOBJ () {
     iBIT.Servo(ibitServo.SV1, 0)
     basic.pause(500)
     iBIT.MotorStop()
-    crashOBJ()
+    ball = 1
 }
 function Movement_test () {
     basic.showString("M")
@@ -93,6 +104,11 @@ function Movement_test () {
     iBIT.MotorStop()
     basic.showIcon(IconNames.Happy)
 }
+function maintenance_test () {
+    maintenance = 0
+    testservo = 0
+    testcam = 0
+}
 function nameset () {
     basic.showIcon(IconNames.SmallHeart)
     huskylens.clearOSD()
@@ -104,13 +120,10 @@ function nameset () {
 function nothing () {
     iBIT.Turn(ibitTurn.Right, 30)
     basic.pause(1000)
-    checkhy()
     iBIT.Turn(ibitTurn.Left, 30)
     basic.pause(1000)
-    checkhy()
     iBIT.Turn(ibitTurn.Left, 30)
     basic.pause(1000)
-    checkhy()
     iBIT.Turn(ibitTurn.Right, 30)
     basic.pause(1000)
     iBIT.Motor(ibitMotor.Forward, 30)
@@ -146,16 +159,43 @@ function Huskylens () {
         iBIT.MotorStop()
     }
 }
-let x = 0
-let y = 0
-let S_y = 0
-let S_x = 0
-let color = 0
-let tag_one = 0
-let ball = 0
-resetServo()
-nameset()
-ball = 0
 basic.forever(function () {
-    Huskylens()
+    if (input.buttonIsPressed(Button.A)) {
+        maintenance = maintenance + 1
+        if (maintenance == 1) {
+            basic.showString("CT")
+        } else if (maintenance == 2) {
+            basic.showString("ST")
+        } else if (maintenance >= 3) {
+            maintenance = 0
+            basic.clearScreen()
+        }
+    }
+    if (maintenance == 1) {
+        basic.showString("" + (testcam))
+        if (input.buttonIsPressed(Button.B)) {
+            testcam = testcam + 1
+            if (testcam == 1) {
+                iBIT.Servo(ibitServo.SV2, 5)
+            } else if (testcam == 2) {
+                iBIT.Servo(ibitServo.SV2, 35)
+            } else if (testcam == 3) {
+                iBIT.Servo(ibitServo.SV2, 50)
+                testcam = 0
+            }
+        }
+    } else if (maintenance == 2) {
+        basic.showString("" + (testservo))
+        if (input.buttonIsPressed(Button.B)) {
+            testservo = testservo + 1
+            if (testservo == 1) {
+                iBIT.Servo(ibitServo.SV1, 0)
+            } else if (testservo == 2) {
+                iBIT.Servo(ibitServo.SV1, 30)
+            } else if (testservo == 3) {
+                iBIT.Servo(ibitServo.SV1, 90)
+                testservo = 0
+            }
+        }
+    }
 })

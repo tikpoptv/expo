@@ -1,3 +1,21 @@
+function ball404 () {
+    iBIT.Servo(ibitServo.SV2, 35)
+    if (huskylens.isAppear(color, HUSKYLENSResultType_t.HUSKYLENSResultBlock) && width < 30) {
+        objectfollowing()
+    } else {
+        if (pins.analogReadPin(AnalogPin.P1) >= 100) {
+            iBIT.Spin(ibitSpin.Right, 50)
+            basic.pause(500)
+            iBIT.Motor(ibitMotor.Forward, 40)
+            basic.pause(300)
+        }
+        basic.showIcon(IconNames.No)
+        iBIT.Spin(ibitSpin.Left, 60)
+        basic.pause(300)
+        iBIT.MotorStop()
+        basic.pause(300)
+    }
+}
 function resetServo () {
     basic.showString("S")
     iBIT.Servo(ibitServo.SV1, 90)
@@ -12,27 +30,6 @@ function resetServo () {
     basic.pause(500)
     basic.showIcon(IconNames.Yes)
 }
-function check_shoot () {
-    if (tag_one == 1) {
-        huskylens.initMode(protocolAlgorithm.ALGORITHM_TAG_RECOGNITION)
-        huskylens.writeName(1, "red")
-        huskylens.writeName(2, "bule")
-        tag_one = 0
-    }
-    if (color == 1) {
-        if (huskylens.isAppear(1, HUSKYLENSResultType_t.HUSKYLENSResultBlock)) {
-            basic.showString("1")
-            BL_RedayShoot()
-        }
-    } else if (color == 2) {
-        if (huskylens.isAppear(2, HUSKYLENSResultType_t.HUSKYLENSResultBlock)) {
-            basic.showString("2")
-            BL_RedayShoot()
-        }
-    } else {
-        iBIT.Spin(ibitSpin.Left, 20)
-    }
-}
 function maintenance_reset () {
     maintenance = 0
     testservo = 0
@@ -40,14 +37,34 @@ function maintenance_reset () {
 }
 function BL_RedayShoot () {
     basic.showIcon(IconNames.Meh)
-    S_x = huskylens.readeBox(1, Content1.xCenter)
-    S_y = huskylens.readeBox(1, Content1.yCenter)
-    if (S_x >= 120 && S_y <= 200) {
-        crashOBJ()
-    } else if (S_x > 120) {
-        iBIT.Turn(ibitTurn.Right, 50)
-    } else if (S_y < 200) {
-        iBIT.Turn(ibitTurn.Left, 50)
+    if (y < 150 && (x >= 50 && x <= 200)) {
+        iBIT.Motor(ibitMotor.Forward, 30)
+    } else if (x < 50) {
+        iBIT.Spin(ibitSpin.Right, 50)
+        basic.pause(150)
+        iBIT.MotorStop()
+    } else if (x > 200) {
+        iBIT.Spin(ibitSpin.Left, 50)
+        basic.pause(150)
+        iBIT.MotorStop()
+    } else if (y >= 150 && (x >= 50 && x <= 200)) {
+        iBIT.MotorStop()
+        iBIT.Motor(ibitMotor.Forward, 50)
+        basic.pause(1000)
+        iBIT.MotorStop()
+        basic.pause(600)
+        iBIT.Servo(ibitServo.SV1, 90)
+        basic.pause(500)
+        iBIT.Motor(ibitMotor.Backward, 50)
+        basic.pause(2000)
+        iBIT.Spin(ibitSpin.Left, 50)
+        basic.pause(500)
+        iBIT.Servo(ibitServo.SV1, 0)
+        basic.pause(200)
+        iBIT.MotorStop()
+        huskylens.initMode(protocolAlgorithm.ALGORITHM_COLOR_RECOGNITION)
+        basic.pause(300)
+        step = 0
     }
 }
 function fc_maintenance_test () {
@@ -56,11 +73,11 @@ function fc_maintenance_test () {
         if (input.buttonIsPressed(Button.B)) {
             testcam = testcam + 1
             if (testcam == 1) {
-                iBIT.Servo(ibitServo.SV2, 15)
+                iBIT.Servo(ibitServo.SV2, 25)
             } else if (testcam == 2) {
                 iBIT.Servo(ibitServo.SV2, 35)
             } else if (testcam == 3) {
-                iBIT.Servo(ibitServo.SV2, 50)
+                iBIT.Servo(ibitServo.SV2, 60)
                 testcam = 0
             }
         }
@@ -71,7 +88,7 @@ function fc_maintenance_test () {
             if (testservo == 1) {
                 iBIT.Servo(ibitServo.SV1, 0)
             } else if (testservo == 2) {
-                iBIT.Servo(ibitServo.SV1, 50)
+                iBIT.Servo(ibitServo.SV1, 60)
             } else if (testservo == 3) {
                 iBIT.Servo(ibitServo.SV1, 90)
                 testservo = 0
@@ -80,7 +97,7 @@ function fc_maintenance_test () {
     }
 }
 function objectfollowing () {
-    if (y > 160 && (x >= 120 && x <= 200)) {
+    if (y > 150 && (x >= 120 && (x <= 200 && width < 160))) {
         iBIT.MotorStop()
         basic.showLeds(`
             # # # # #
@@ -89,10 +106,9 @@ function objectfollowing () {
             # . . . #
             # # # # #
             `)
-        iBIT.Servo(ibitServo.SV1, 50)
         y = -1
         step = 1
-    } else if (y < 160 && (x >= 120 && x <= 200)) {
+    } else if (y < 150 && (x >= 120 && (x <= 200 && width < 160))) {
         basic.showLeds(`
             . . # . .
             . # . # .
@@ -100,11 +116,15 @@ function objectfollowing () {
             . . # . .
             . . # . .
             `)
-        iBIT.Motor(ibitMotor.Forward, 30)
-    } else if (x < 120) {
-        iBIT.Turn(ibitTurn.Right, 30)
-    } else if (x > 200) {
-        iBIT.Turn(ibitTurn.Left, 30)
+        iBIT.Motor(ibitMotor.Forward, 20)
+    } else if (x < 120 && width < 160) {
+        iBIT.Spin(ibitSpin.Right, 50)
+        basic.pause(200)
+        iBIT.MotorStop()
+    } else if (x > 200 && width < 160) {
+        iBIT.Spin(ibitSpin.Left, 50)
+        basic.pause(200)
+        iBIT.MotorStop()
     }
 }
 function fc_maintenance () {
@@ -121,6 +141,11 @@ function fc_maintenance () {
         }
     }
 }
+function data () {
+    huskylens.request()
+    y = huskylens.readeBox(color, Content1.yCenter)
+    x = huskylens.readeBox(color, Content1.xCenter)
+}
 function runtest () {
     if (input.buttonIsPressed(Button.B)) {
         iBIT.Servo(ibitServo.SV1, 0)
@@ -136,23 +161,24 @@ function runtest () {
         basic.pause(300)
         iBIT.Servo(ibitServo.SV1, 0)
     } else if (input.buttonIsPressed(Button.A)) {
-        iBIT.Servo(ibitServo.SV1, 0)
-        iBIT.Motor(ibitMotor.Backward, 100)
-        basic.pause(700)
-        iBIT.MotorStop()
-        iBIT.Servo(ibitServo.SV1, 40)
-        basic.pause(500)
-        iBIT.Motor(ibitMotor.Forward, 100)
-        basic.pause(700)
-        iBIT.MotorStop()
-        basic.pause(300)
-        iBIT.Servo(ibitServo.SV1, 0)
+    	
     }
 }
 function ready_crashOBJ () {
     iBIT.Servo(ibitServo.SV1, 50)
     basic.pause(500)
     fw_ball()
+}
+function ir () {
+    if (ir1 >= 468 && ir2 >= 612) {
+        iBIT.Motor(ibitMotor.Forward, 30)
+    } else if (ir1 < 468 && ir2 >= 612) {
+        iBIT.Turn(ibitTurn.Left, 30)
+    } else if (ir1 >= 468 && ir2 < 612) {
+        iBIT.Turn(ibitTurn.Right, 30)
+    } else {
+    	
+    }
 }
 function Movement_test () {
     basic.showString("M")
@@ -169,21 +195,56 @@ function Movement_test () {
 }
 function nameset () {
     basic.showIcon(IconNames.SmallHeart)
+    count = 0
+    color = 1
     huskylens.clearOSD()
     huskylens.initI2c()
     huskylens.initMode(protocolAlgorithm.ALGORITHM_COLOR_RECOGNITION)
-    huskylens.writeName(1, "test")
 }
 function fw_ball () {
-    if (y > 130 && (x >= 120 && x <= 200)) {
+    if (y > 160 && (x >= 145 && x <= 185)) {
+        iBIT.MotorStop()
+        iBIT.Motor(ibitMotor.Backward, 35)
+        basic.pause(400)
+        iBIT.MotorStop()
+        basic.pause(200)
+        iBIT.Servo(ibitServo.SV1, 80)
+        basic.pause(200)
+        iBIT.Motor(ibitMotor.Forward, 50)
+        basic.pause(500)
+        iBIT.Servo(ibitServo.SV1, 0)
+        iBIT.MotorStop()
+        basic.pause(200)
+        count = count + 1
+        countall = countall + 1
+        if (count == 6) {
+            n = 1
+        } else if (count == 7) {
+            color = 1
+            count = 0
+            countall = 0
+            n = 3
+        } else {
+            n = 3
+        }
+        if (count == n) {
+            step = 2
+        } else {
+            step = 0
+        }
+    } else if (y < 160 && (x > 135 && x < 195)) {
+        iBIT.Motor(ibitMotor.Forward, 35)
+        iBIT.Servo(ibitServo.SV1, 0)
+    } else if (x < 135) {
+        iBIT.Spin(ibitSpin.Right, 50)
+        basic.pause(100)
         iBIT.MotorStop()
         iBIT.Servo(ibitServo.SV1, 0)
-    } else if (y < 130 && (x >= 120 && x <= 200)) {
-        iBIT.Motor(ibitMotor.Forward, 20)
-    } else if (x < 120) {
-        iBIT.Turn(ibitTurn.Right, 20)
-    } else if (x > 200) {
-        iBIT.Turn(ibitTurn.Left, 20)
+    } else if (x > 195) {
+        iBIT.Spin(ibitSpin.Left, 50)
+        basic.pause(100)
+        iBIT.MotorStop()
+        iBIT.Servo(ibitServo.SV1, 0)
     }
 }
 function crashOBJ () {
@@ -205,6 +266,7 @@ function Huskylens () {
         color = 1
         x = huskylens.readeBox(1, Content1.xCenter)
         y = huskylens.readeBox(1, Content1.yCenter)
+        width = huskylens.readeBox(1, Content1.width)
         objectfollowing()
     } else if (huskylens.isAppear(2, HUSKYLENSResultType_t.HUSKYLENSResultBlock)) {
         color = 2
@@ -212,55 +274,116 @@ function Huskylens () {
         y = huskylens.readeBox(2, Content1.yCenter)
         objectfollowing()
     } else {
-        basic.showIcon(IconNames.No)
         iBIT.MotorStop()
+        ir1 = pins.analogReadPin(AnalogPin.P1)
+        ir2 = pins.analogReadPin(AnalogPin.P2)
+        basic.showIcon(IconNames.No)
     }
 }
 let delay_one = 0
+let tag_one = 0
+let detect_color_mode_one = 0
+let high = 0
 let ball = 0
+let countall = 0
+let ir2 = 0
+let ir1 = 0
 let step = 0
 let x = 0
 let y = 0
-let S_y = 0
-let S_x = 0
 let testcam = 0
 let testservo = 0
 let maintenance = 0
+let width = 0
+let n = 0
 let color = 0
-let tag_one = 0
+let count = 0
+resetServo()
 nameset()
 huskylens.clearOSD()
-huskylens.writeOSD("tikxd", 160, 200)
+count = 0
+count = 0
+color = 2
+n = 3
+let spinw = 0
 basic.forever(function () {
     fc_maintenance()
     serial.writeValue("x", x)
     serial.writeValue("y", y)
+    serial.writeValue("w", width)
+    serial.writeValue("h", high)
+    serial.writeValue("ir1", pins.analogReadPin(AnalogPin.P1))
+    serial.writeValue("ir2", pins.analogReadPin(AnalogPin.P2))
     if (maintenance > 0) {
         fc_maintenance_test()
         huskylens.request()
         x = huskylens.readeBox(1, Content1.xCenter)
         y = huskylens.readeBox(1, Content1.yCenter)
+        width = huskylens.readeBox(1, Content1.width)
+        high = huskylens.readeBox(1, Content1.height)
     } else {
         huskylens.request()
         x = huskylens.readeBox(color, Content1.xCenter)
         y = huskylens.readeBox(color, Content1.yCenter)
+        width = huskylens.readeBox(color, Content1.width)
         if (step == 0) {
-            Huskylens()
+            if (detect_color_mode_one > 1) {
+                huskylens.initMode(protocolAlgorithm.ALGORITHM_COLOR_RECOGNITION)
+                detect_color_mode_one = 0
+            }
+            ball404()
             tag_one = 1
             delay_one = 1
         } else if (step == 1) {
-            if (delay_one == 1) {
-                iBIT.Servo(ibitServo.SV2, 5)
-                basic.pause(1000)
+            while (step == 1) {
+                huskylens.request()
+                x = huskylens.readeBox(color, Content1.xCenter)
                 y = huskylens.readeBox(color, Content1.yCenter)
-                delay_one = 0
-                y = -1
+                width = huskylens.readeBox(color, Content1.width)
+                serial.writeValue("x", x)
+                serial.writeValue("y", y)
+                iBIT.Servo(ibitServo.SV2, 25)
+                if (delay_one == huskylens.readeBox(color, Content1.yCenter)) {
+                    y = 0
+                    delay_one = 0
+                    y = -1
+                }
+                if (huskylens.isAppear(color, HUSKYLENSResultType_t.HUSKYLENSResultBlock) && width < 30) {
+                    fw_ball()
+                }
             }
-            fw_ball()
         } else if (step == 2) {
-            check_shoot()
-        } else {
-        	
+            while (step == 2) {
+                if (tag_one == 1) {
+                    huskylens.initMode(protocolAlgorithm.ALGORITHM_TAG_RECOGNITION)
+                    huskylens.writeName(1, "red")
+                    huskylens.writeName(2, "bule")
+                    tag_one = 0
+                    x = -1
+                    y = -1
+                }
+                iBIT.Servo(ibitServo.SV2, 60)
+                huskylens.request()
+                x = huskylens.readeBox(color, Content1.xCenter)
+                y = huskylens.readeBox(color, Content1.yCenter)
+                width = huskylens.readeBox(color, Content1.width)
+                high = huskylens.readeBox(color, Content1.height)
+                if (huskylens.isAppear(color, HUSKYLENSResultType_t.HUSKYLENSResultBlock)) {
+                    BL_RedayShoot()
+                } else {
+                    if (pins.analogReadPin(AnalogPin.P1) >= 100) {
+                        iBIT.Spin(ibitSpin.Right, 50)
+                        basic.pause(500)
+                        iBIT.Motor(ibitMotor.Forward, 40)
+                        basic.pause(300)
+                    }
+                    basic.showIcon(IconNames.No)
+                    iBIT.Spin(ibitSpin.Left, 55)
+                    basic.pause(300)
+                    iBIT.MotorStop()
+                    basic.pause(300)
+                }
+            }
         }
     }
 })

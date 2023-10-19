@@ -1,5 +1,5 @@
 {
-    "name": "expo",
+    "name": "expo - Copy",
     "description": "",
     "dependencies": {
         "core": "*",
@@ -8,7 +8,8 @@
         "iBIT": "github:emwta/pxt-ibit#v4.0.10",
         "Huskylens": "github:dfrobot/pxt-dfrobot_huskylens#v2.0.5",
         "radio-broadcast": "*",
-        "servo": "*"
+        "servo": "*",
+        "audio-recording": "*"
     },
     "files": [
         "main.blocks",
